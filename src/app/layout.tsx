@@ -1,6 +1,10 @@
+import { ModalController } from "@/components/providers/modal-controller";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+
+import { ReduxProvider } from "@/components/providers/redux-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,12 +28,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ReduxProvider>
+      <html lang="en">
+        <body
+          className={`text-foreground bg-background ${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <ModalController />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ReduxProvider>
   );
 }
