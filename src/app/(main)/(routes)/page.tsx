@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
-import SessionTimer from "@/components/features/session/session-timer";
+import Events from "@/components/features/events/events";
+import SessionTimerCard from "@/components/features/session/session-timer-card";
 import { Heading } from "@/components/ui/heading";
 
 export default async function Home() {
@@ -11,8 +12,9 @@ export default async function Home() {
   return (
     <div className="space-y-10">
       <Heading size="lg">Dashboard</Heading>
-      <div className="grid grid-cols-3">
-        <SessionTimer />
+      <div className="grid grid-cols-3 gap-4">
+        <SessionTimerCard />
+        <Events />
       </div>
     </div>
   );

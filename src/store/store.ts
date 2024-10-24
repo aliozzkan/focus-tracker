@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-const rootReducer = combineReducers({});
+import { currentTodoSessionReducer } from "./slices/current-todo-session.slice";
+const rootReducer = combineReducers({
+  currentTodoSession: currentTodoSessionReducer,
+});
 
 export const store = configureStore({
   reducer: rootReducer,
 });
 
-export type IRootState = ReturnType<typeof rootReducer>; // korkma component üzerindeki state tipini belirtiyoruz
-export type AppThunkDispatch = typeof store.dispatch; //
+export type IRootState = ReturnType<typeof rootReducer>;

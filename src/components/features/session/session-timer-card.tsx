@@ -14,65 +14,32 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
-import { PauseIcon, PencilIcon, PlayIcon, TimerIcon, TimerResetIcon, XIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  REMANING_SESSIONS
+} from "@/store/slices/current-todo-session.slice";
+import {
+  PauseIcon,
+  PencilIcon,
+  PlayIcon,
+  TimerIcon,
+  TimerResetIcon,
+  XIcon,
+} from "lucide-react";
+import { useSessionTimer } from "./use-session-timer";
 
-const REAMINING_SECONDS = [
-  {
-    label: "25 minutes",
-    value: 60 * 25,
-  },
-  {
-    label: "45 minutes",
-    value: 60 * 45,
-  },
-  {
-    label: "60 minutes",
-    value: 60 * 60,
-  },
-];
-
-function SessionTimer() {
-  const [remainingSecondsState, setRemainingSecondsState] = useState(
-    REAMINING_SECONDS[0].value
-  );
-  const [passingSecondsState, setPassingSecondsState] = useState(0);
-  const [intervalState, setIntervalState] = useState<NodeJS.Timeout>();
-
-  function updatePassingSeconds() {
-    setPassingSecondsState((prev) => prev + 1);
-  }
-
-  function startTimer() {
-    const interval = setInterval(updatePassingSeconds, 1000);
-    setIntervalState(interval);
-    return interval;
-  }
-
-  function pauseTimer() {
-    clearInterval(intervalState);
-    setIntervalState(undefined);
-  }
-
-  function resetTimer() {
-    clearInterval(intervalState);
-    setIntervalState(undefined);
-    setPassingSecondsState(0);
-  }
-
-  const time = remainingSecondsState - passingSecondsState;
-  const mins = Math.floor(time / 60);
-
-  useEffect(() => {
-    if (passingSecondsState >= remainingSecondsState) {
-      clearInterval(intervalState);
-      setIntervalState(undefined);
-    }
-  }, [passingSecondsState]);
-
-  const isPlaying = !!intervalState;
-  const isIdle = !isPlaying && passingSecondsState === 0;
-  const isPaused = !isPlaying && !isIdle;
+function SessionTimerCard() {
+  const {
+    changeRemainingSeconds,
+    currentTime,
+    isIdle,
+    isPaused,
+    isPlaying,
+    passingSeconds,
+    pauseTimer,
+    remainingSeconds,
+    resetTimer,
+    startTimer,
+  } = useSessionTimer();
 
   return (
     <div>
@@ -87,8 +54,8 @@ function SessionTimer() {
               </div>
             </div>
             <RadialChartGrid
-              remaning={remainingSecondsState}
-              value={passingSecondsState}
+              remaning={remainingSeconds}
+              value={passingSeconds}
             />
             <div className="mb-10">
               <DropdownMenu>
@@ -98,17 +65,17 @@ function SessionTimer() {
                     variant="ghost"
                     disabled={!isIdle}
                   >
-                    {mins}:{time % 60 < 10 ? `0${time % 60}` : time % 60}
+                    {currentTime}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
                   <DropdownMenuLabel>Times</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {REAMINING_SECONDS.map((item) => (
+                  {REMANING_SESSIONS.map((item) => (
                     <DropdownMenuItem
                       key={item.label}
                       onClick={() => {
-                        setRemainingSecondsState(item.value);
+                        changeRemainingSeconds(item.value);
                       }}
                     >
                       {item.label}
@@ -170,4 +137,4 @@ function SessionTimer() {
   );
 }
 
-export default SessionTimer;
+export default SessionTimerCard;
